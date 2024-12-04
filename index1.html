@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Переміщення об'єктів</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        .draggable {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        #obj1 {
+            background-color: red;
+        }
+        #obj2 {
+            background-color: green;
+        }
+        #obj3 {
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+    <div id="obj1" class="draggable"></div>
+    <div id="obj2" class="draggable"></div>
+    <div id="obj3" class="draggable"></div>
+
+    <script>
+        // Функція для переміщення елементів
+        function makeDraggable(element) {
+            let isDragging = false;
+            let offsetX = 0;
+            let offsetY = 0;
+
+            // Коли починається перетягування
+            element.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                offsetX = e.clientX - element.getBoundingClientRect().left;
+                offsetY = e.clientY - element.getBoundingClientRect().top;
+                element.style.cursor = 'move';
+            });
+
+            // Коли елемент перетягується
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    const x = e.clientX - offsetX;
+                    const y = e.clientY - offsetY;
+                    element.style.left = x + 'px';
+                    element.style.top = y + 'px';
+                }
+            });
+
+            // Коли припиняється перетягування
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                element.style.cursor = 'pointer';
+            });
+        }
+
+        // Застосувати функцію makeDraggable до кожного об'єкта
+        makeDraggable(document.getElementById('obj1'));
+        makeDraggable(document.getElementById('obj2'));
+        makeDraggable(document.getElementById('obj3'));
+    </script>
+</body>
+</html>
