@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Переміщення об'єктів з обмеженнями</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        .draggable {
+            position: absolute;
+            cursor: pointer;
+            opacity: 0.7; /* Напівпрозорість */
+        }
+        /* Червоний круг */
+        #obj1 {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: rgba(255, 0, 0, 0.7); /* Червоний колір з напівпрозорістю */
+        }
+        /* Зелений квадрат */
+        #obj2 {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(0, 255, 0, 0.7); /* Зелений колір з напівпрозорістю */
+        }
+        /* Синій трикутник */
+        #obj3 {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid rgba(0, 0, 255, 0.7); /* Синій колір з напівпрозорістю */
+        }
+    </style>
+</head>
+<body>
+    <div id="obj1" class="draggable"></div>
+    <div id="obj2" class="draggable"></div>
+    <div id="obj3" class="draggable"></div>
+
+    <script>
+        // Функція для переміщення елементів з обмеженням
+        function makeDraggable(element) {
+            let isDragging = false;
+            let offsetX = 0;
+            let offsetY = 0;
+
+            // Отримуємо розміри елемента
+            const elementWidth = element.offsetWidth;
+            const elementHeight = element.offsetHeight;
+
+            // Коли починається перетягування
+            element.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                offsetX = e.clientX - element.getBoundingClientRect().left;
+                offsetY = e.clientY - element.getBoundingClientRect().top;
+                element.style.cursor = 'move';
+            });
+
+            // Коли елемент перетягується
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    // Отримуємо розміри вікна браузера
+                    const windowWidth = window.innerWidth;
+                    const windowHeight = window.innerHeight;
+
+                    // Розраховуємо нові координати з обмеженням на межі вікна
+                    let x = e.clientX - offsetX;
+                    let y = e.clientY - offsetY;
+
+                    // Обмежуємо координати, щоб елемент не виходив за межі вікна
+                    if (x < 0) x = 0;
+                    if (y < 0) y = 0;
+                    if (x + elementWidth > windowWidth) x = windowWidth - elementWidth;
+                    if (y + elementHeight > windowHeight) y = windowHeight - elementHeight;
+
+                    // Встановлюємо нові координати
+                    element.style.left = x + 'px';
+                    element.style.top = y + 'px';
+                }
+            });
+
+            // Коли припиняється перетягування
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                element.style.cursor = 'pointer';
+            });
+        }
+
+        // Застосувати функцію makeDraggable до кожного об'єкта
+        makeDraggable(document.getElementById('obj1'));
+        makeDraggable(document.getElementById('obj2'));
+        makeDraggable(document.getElementById('obj3'));
+    </script>
+</body>
+</html>
